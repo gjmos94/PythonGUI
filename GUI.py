@@ -65,10 +65,12 @@ def clean_rev(x, m1, m2, y):
     df_final.to_csv(r'C:\Users\mosco\OneDrive\Documents\Python Scripts\final_rev_analysis.csv')
 
 #Browse Button Code
-browse_text = tk.StringVar()
-browsebtn = tk.Button(root, textvariable=browse_text, command=lambda:open_file(), font="raleway")
+browse_text = tk.StringVar()                                                         #changed font, color, and bg of button
+browsebtn = tk.Button(root, textvariable=browse_text, command=lambda:open_file(), font="helvetica", bg="purple", fg="gold")
 browse_text.set("Browse")
 browsebtn.grid(column=1, row=2)
-
+#changed Canvas and button color
+canvas.configure(background='teal')
+root.configure(background="maroon")
 root.mainloop()
 
