@@ -1,4 +1,4 @@
-#test comment///////////////////*******
+#GUI prototype
 import tkinter as tk
 import pandas as pd
 import numpy as np
@@ -8,7 +8,7 @@ from tkinter.filedialog import askopenfile
 root = tk.Tk()
 
 canvas = tk.Canvas(root, width=600, height=300)
-canvas.grid(columnspan=3)
+canvas.grid(columnspan=3, rowspan=3)
 
 #logo
 logo= Image.open('iland.png')
@@ -17,11 +17,18 @@ logo_label = tk.Label(image=logo)
 logo_label.image = logo
 logo_label.grid(column=1, row=0)
 
+def testOpen_file():
+    print("This works!!!")
+
 #open file function
 def open_file():
-    browse_text.set("Loading...")
-    file = askopenfile(parent=root, mode='rb', title="choose a file")
-    clean_rev(file)
+    browse_text.set("Completed")
+    file = askopenfile(parent=root, mode='w', title="choose a file", filetype=[("Txt file", "*.txt")])
+    file.write("Hello World!!!")
+
+#instructions
+instructions= tk.Label(root, text="Select a file to process", font="helvetica 12 bold", bg="white")
+instructions.grid(columnspan=3,column=0, row=1)
 
 def clean_rev(x, m1, m2, y):
     # This loads the CSV file into the console
@@ -66,11 +73,11 @@ def clean_rev(x, m1, m2, y):
 
 #Browse Button Code
 browse_text = tk.StringVar()                                                         #changed font, color, and bg of button
-browsebtn = tk.Button(root, textvariable=browse_text, command=lambda:open_file(), font="helvetica", bg="purple", fg="gold")
+browsebtn = tk.Button(root, textvariable=browse_text, command=open_file, font="helvetica 12 bold", bg="navy blue", fg="gold", height=2 , width=15)
 browse_text.set("Browse")
 browsebtn.grid(column=1, row=2)
 #changed Canvas and button color
-canvas.configure(background='teal')
-root.configure(background="maroon")
+canvas.configure(background='white')
+root.configure(background="light blue")
 root.mainloop()
 
