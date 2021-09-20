@@ -17,14 +17,13 @@ logo_label = tk.Label(image=logo)
 logo_label.image = logo
 logo_label.grid(column=1, row=0)
 
-def testOpen_file():
-    print("This works!!!")
-
 #open file function
 def open_file():
-    browse_text.set("Completed")
+    browse_text.set("Loading...")
     file = askopenfile(parent=root, mode='w', title="choose a file", filetype=[("Txt file", "*.txt")])
-    file.write("Hello World!!!")
+    file.write("Hello World$!!!")
+    browse_text.set("Browse")
+
 
 #instructions
 instructions= tk.Label(root, text="Select a file to process", font="helvetica 12 bold", bg="white")
@@ -73,7 +72,7 @@ def clean_rev(x, m1, m2, y):
 
 #Browse Button Code
 browse_text = tk.StringVar()                                                         #changed font, color, and bg of button
-browsebtn = tk.Button(root, textvariable=browse_text, command=open_file, font="helvetica 12 bold", bg="navy blue", fg="gold", height=2 , width=15)
+browsebtn = tk.Button(root, textvariable=browse_text, command=open_file, font="helvetica 12 bold", bg="navy blue", fg="gold", height=1 , width=15)
 browse_text.set("Browse")
 browsebtn.grid(column=1, row=2)
 #changed Canvas and button color
