@@ -1,13 +1,12 @@
-#GUI prototype
-
 import tkinter as tk
 import pandas as pd
 import numpy as np
 from PIL import Image, ImageTk
 from tkinter.filedialog import askopenfile
 
-#open file function
+# FUNCTIONS=========================================================================================================
 
+# open file function
 def open_file():
     x1 = " "
 
@@ -37,11 +36,14 @@ def open_file():
 
     browse_text.set("Run")
 
-def testInput(f1,a1,a2,a3): # to test openfile and entry box input
+
+# to test openfile and entry box input
+def testInput(f1,a1,a2,a3):
     print(type(f1))
     print(type(a1))
     print(type(a2))
     print(type(int(a3)))
+
 
 def clean_rev(x, m1, m2, y):
     # This loads the CSV file into the console
@@ -84,6 +86,8 @@ def clean_rev(x, m1, m2, y):
     df_final = df2[(df2.Variance >= y) | (df2.Variance <= -y)]
     df_final.to_csv(r'C:\Users\gregi\Downloads\finalTest.csv')
 
+
+# function to check value of radio button selected
 def clicked(value):
     if value == 2:
         Funct2()
@@ -91,17 +95,21 @@ def clicked(value):
     if value == 1:
         Funct1()
 
-def Funct1():   #shows Frame1
+
+# functions to be called by radio buttons to show menu frames
+def Funct1():
 
     frame2.place_forget()
     frame1.place(width=600, height=220)
 
-def Funct2():   #shows Frame2
 
+def Funct2():
     frame1.place_forget()
     frame2.place(width=600, height=220)
 
-def intCheck(): #checks for integer values in entry boxes, will return error
+
+# checks for integer values in entry boxes, will return error
+def intCheck():
     try:
         int(e1.get())
         int(e2.get())
@@ -109,19 +117,24 @@ def intCheck(): #checks for integer values in entry boxes, will return error
         return True
     except ValueError:
         return False
-##########################################################################################################
-# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$#
-##########################################################################################################
 
+
+def printingTest():
+    print("THIS IS THE SECOND WIDGET")
+
+
+# MAIN CODE=========================================================================================================
+
+# root canvas and frames set up
 root = tk.Tk()
 canvas = tk.Canvas(root)
 root.geometry("600x300")
-
-
+# frames will not cover radio buttons in root
 frame1 = tk.Frame(root, bg="#F0F0F0", width=290, height=145)
 frame2 = tk.Frame(root, bg="#F0F0F0", width=290, height=145)
-#
-# logos
+
+
+# logos for both frames
 logo = Image.open('iland.png')
 logo = ImageTk.PhotoImage(logo)
 logo_label = tk.Label(frame1, image=logo)
@@ -133,7 +146,9 @@ logo2 = ImageTk.PhotoImage(logo2)
 logo2_label = tk.Label(frame2, image=logo2)
 logo2_label.image = logo2
 logo2_label.place(x=380, y=20)
-# radio buttons
+
+
+# radio buttons for main root bottom menu
 r = tk.IntVar()
 r.set("1")
 
@@ -142,12 +157,15 @@ radB.place(x=80,y=220)
 radB=tk.Radiobutton(root, text="Sales Register", variable=r, value=2, command=lambda: clicked(r.get()))
 radB.place(x=250,y=220)
 
-# instructions
+
+# instructions for both frames
 instructions = tk.Label(frame1, text="Select a file to process", font="helvetica 12 bold", bg="#F0F0F0")
 instructions.place(x=380, y=100)
 instructions2 = tk.Label(frame2, text="Select a file to process", font="helvetica 12 bold", bg="#F0F0F0")
 instructions2.place(x=380, y=100)
-#input boxes
+
+
+# input boxes and labels for both frames
 tk.Label(frame1, text="Value 1").place(x=80, y=50)
 tk.Label(frame1, text="Value 2").place(x=80, y=100)
 tk.Label(frame1, text="Value 3").place(x=80, y=150)
@@ -164,14 +182,18 @@ e4 = tk.Entry(frame2)
 e4.place(x=180, y=50)
 
 
-
-
-
+# RUN button set up for both frames
 browse_text = tk.StringVar()                                                         # changed font, color, and bg of button
 browsebtn = tk.Button(frame1, textvariable=browse_text, command=open_file, font="helvetica 12 bold", bg="navy blue", fg="gold", height=1, width=15)
 browse_text.set("Run")
 browsebtn.place(x=380, y=150)
 
+browsebtn2 = tk.Button(frame2, textvariable=browse_text, command=printingTest,  font="helvetica 12 bold", bg="purple", fg="gold", height=1, width=15)
+browse_text.set("Run")
+browsebtn2.place(x=380, y=150)
+
+
+#  starts off program on  frame 1
 Funct1()
 
 root.mainloop()
