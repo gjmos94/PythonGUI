@@ -10,23 +10,32 @@ from tkinter.filedialog import askopenfile
 
 def open_file():
     x1 = " "
-    browse_text.set("Loading...")
+
     file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("CSV File", "*.csv")])
     x1 = file.name  # This is getting the exact file address
+    intCheck()
     eStr1 = e1.get()   # These are getting the inputs from Entry boxes 1-3
     eStr2 = e2.get()
     eStr3 = int(e3.get())
 
-    clean_rev(x1, eStr1, eStr2, eStr3)
-    newWindow = tk.Toplevel(root)
-    newWindow.geometry("450x50")
-    completeLabel = tk.Label(newWindow, text=file.name)
-    completeLabel.grid(column=3, row=4)
-    completeLabel2 = tk.Label(newWindow, text="has been processed")
-    completeLabel2.grid(column=4, row=4)
+    if intCheck() == True:
+        clean_rev(x1, eStr1, eStr2, eStr3)
+        completeLabel = tk.Label(root, text=file.name + "has been processed").place(x=105, y=255)
+
+
+
+    else:
+        print("error")
+        newWindow = tk.Toplevel(root)
+        newWindow.geometry("350x50")
+        completeLabel2 = tk.Label(newWindow, text="ERROR: Please enter numeric values ONLY", fg="red", font="bold")
+        completeLabel2.grid(column=4, row=4)
+
+
+
+
 
     browse_text.set("Run")
-
 
 def testInput(f1,a1,a2,a3): # to test openfile and entry box input
     print(type(f1))
@@ -75,116 +84,95 @@ def clean_rev(x, m1, m2, y):
     df_final = df2[(df2.Variance >= y) | (df2.Variance <= -y)]
     df_final.to_csv(r'C:\Users\gregi\Downloads\finalTest.csv')
 
-'''def clicked(value):
-
+def clicked(value):
     if value == 2:
-    # Added frames with new radio buttons and entry boxes for secondary apps
-       center = tk.Frame(root, bg="#F0F0F0", width=290, height=145)
-       center.place(width=600, height=220)
-       lab1=tk.Label(center, text="Value 1").grid(column=1, row=0, padx=20)
-       lab2=tk.Label(center, text="Value 2").grid(column=1, row=1, padx=20)
-       lab3=tk.Label(center, text="Value 3").grid(column=1, row=2, padx=20)
-       e1 = tk.Entry(center)
-       e2 = tk.Entry(center)
-       e3 = tk.Entry(center)
-       e1.grid(row=0, column=2)
-       e2.grid(row=1, column=2)
-       e3.grid(row=2, column=2)
+        Funct2()
 
-    elif value == 1:
-        print("hit")
-'''
-def Funct1():
+    if value == 1:
+        Funct1()
+
+def Funct1():   #shows Frame1
 
     frame2.place_forget()
-    frame1.place(width=600, height=300)
-    instructions = tk.Label(frame1, text="Select a file to processsssssss", font="helvetica 12 bold", bg="white")
-    instructions.grid(column=5, row=1)
-    logo = Image.open('iland.png')
-    logo = ImageTk.PhotoImage(logo)
-    logo_label = tk.Label(image=logo)
-    logo_label.image = logo
-    logo_label.grid(column=5, row=0, padx=50)
+    frame1.place(width=600, height=220)
 
-def Funct2():
+def Funct2():   #shows Frame2
 
     frame1.place_forget()
     frame2.place(width=600, height=220)
-    instructions = tk.Label(frame2, text="Select a file to process", font="helvetica 12 bold", bg="red")
-    instructions.grid(column=5, row=1)
-    logo = Image.open('iland.png')
-    logo = ImageTk.PhotoImage(logo)
-    logo_label = tk.Label(image=logo)
-    logo_label.image = logo
-    logo_label.grid(column=5, row=0, padx=50)
 
-
-
-
-
+def intCheck(): #checks for integer values in entry boxes, will return error
+    try:
+        int(e1.get())
+        int(e2.get())
+        int(e3.get())
+        return True
+    except ValueError:
+        return False
 ##########################################################################################################
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$#
 ##########################################################################################################
 
-
 root = tk.Tk()
+canvas = tk.Canvas(root)
+root.geometry("600x300")
 
-canvas = tk.Canvas(root, width=600, height=300)
-canvas.grid(columnspan=7, rowspan=5)
-# logo
+
+frame1 = tk.Frame(root, bg="#F0F0F0", width=290, height=145)
+frame2 = tk.Frame(root, bg="#F0F0F0", width=290, height=145)
+#
+# logos
 logo = Image.open('iland.png')
 logo = ImageTk.PhotoImage(logo)
-logo_label = tk.Label(image=logo)
+logo_label = tk.Label(frame1, image=logo)
 logo_label.image = logo
-logo_label.grid(column=5, row=0, padx=50)
+logo_label.place(x=380, y=20)
 
-'''
-radio buttons
+logo2 = Image.open('iland.png')
+logo2 = ImageTk.PhotoImage(logo2)
+logo2_label = tk.Label(frame2, image=logo2)
+logo2_label.image = logo2
+logo2_label.place(x=380, y=20)
+# radio buttons
 r = tk.IntVar()
 r.set("1")
 
 radB=tk.Radiobutton(root, text="Revenue Clean-up", variable=r, value=1, command=lambda: clicked(r.get()))
-radB.grid( column=5, row=3)
+radB.place(x=80,y=220)
 radB=tk.Radiobutton(root, text="Sales Register", variable=r, value=2, command=lambda: clicked(r.get()))
-radB.grid( column=2, row=3)
-'''
-frame1 = tk.Frame(root, bg="pink", width=290, height=145)
-frame2 = tk.Frame(root, bg="#F0F0F0", width=290, height=145)
-#frame buttons
-frame2_text = tk.StringVar()
-frameButton2 =tk.Button(root, textvariable=frame2_text, command=Funct1, font="helvetica 12 bold", bg="#F0F0F0", fg="black", height=1, width=15)
-frame2_text.set("Revenue Cleanup")
-frameButton2.grid(column=5, row=3)
-frame1_text = tk.StringVar()
-frameButton1 =tk.Button(root, textvariable=frame1_text, command=Funct2, font="helvetica 12 bold", bg="#F0F0F0", fg="black", height=1, width=15)
-frame1_text.set("Sales Register")
-frameButton1.grid(column=2, row=3)
+radB.place(x=250,y=220)
+
 # instructions
-
-
+instructions = tk.Label(frame1, text="Select a file to process", font="helvetica 12 bold", bg="#F0F0F0")
+instructions.place(x=380, y=100)
+instructions2 = tk.Label(frame2, text="Select a file to process", font="helvetica 12 bold", bg="#F0F0F0")
+instructions2.place(x=380, y=100)
 #input boxes
-tk.Label(frame1, text="Value 1").grid(column=1, row=0, padx=20)
-tk.Label(frame1, text="Value 2").grid(column=1, row=1, padx=20)
-tk.Label(frame1, text="Value 3").grid(column=1, row=2, padx=20)
+tk.Label(frame1, text="Value 1").place(x=80, y=50)
+tk.Label(frame1, text="Value 2").place(x=80, y=100)
+tk.Label(frame1, text="Value 3").place(x=80, y=150)
 
 e1 = tk.Entry(frame1)
 e2 = tk.Entry(frame1)
 e3 = tk.Entry(frame1)
+e1.place(x=180, y=50)
+e2.place(x=180, y=100)
+e3.place(x=180, y=150)
+
+tk.Label(frame2, text = "Value").place(x=80, y=50)
+e4 = tk.Entry(frame2)
+e4.place(x=180, y=50)
 
 
-
-e1.grid(row=0, column=2)
-e2.grid(row=1, column=2)
-e3.grid(row=2, column=2)
 
 
 
 browse_text = tk.StringVar()                                                         # changed font, color, and bg of button
 browsebtn = tk.Button(frame1, textvariable=browse_text, command=open_file, font="helvetica 12 bold", bg="navy blue", fg="gold", height=1, width=15)
 browse_text.set("Run")
-browsebtn.grid(column=5, row=2)
-Funct1()
+browsebtn.place(x=380, y=150)
 
+Funct1()
 
 root.mainloop()
 
