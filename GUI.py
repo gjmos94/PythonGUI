@@ -13,14 +13,19 @@ def open_file():
 
     file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("CSV File", "*.csv")])
     x1 = file.name  # This is getting the exact file address
-    intCheck()
-    eStr1 = e1.get()   # 34These are getting the inputs from Entry boxes 1-3
+
+    completeLabel = tk.Label(root, text=file.name + "has been processed", fg="Blue")
+    completeLabel.place_forget()
+
+    eStr1 = e1.get()   # These are getting the inputs from Entry boxes 1-3
     eStr2 = e2.get()
-    eStr3 = int(e3.get())
+    eStr3 = e3.get()
+    intCheck()
 
     if intCheck() == True:
+        eStr3= int(eStr3)
         clean_rev(x1, eStr1, eStr2, eStr3)
-        completeLabel = tk.Label(root, text=file.name + "has been processed").place(x=105, y=255)
+        completeLabel.place(x=105, y=255)
 
 
 
@@ -131,6 +136,7 @@ root = tk.Tk()
 root.title('Revenue Clean Up')
 root.iconbitmap('ilandicon.ico')
 
+
 canvas = tk.Canvas(root)
 root.geometry("600x300")
 # frames will not cover radio buttons in root
@@ -143,13 +149,13 @@ logo = Image.open('iland.png')
 logo = ImageTk.PhotoImage(logo)
 logo_label = tk.Label(frame1, image=logo)
 logo_label.image = logo
-logo_label.place(x=380, y=20)
+logo_label.place(x=380, y=40)
 
 logo2 = Image.open('iland.png')
 logo2 = ImageTk.PhotoImage(logo2)
 logo2_label = tk.Label(frame2, image=logo2)
 logo2_label.image = logo2
-logo2_label.place(x=380, y=20)
+logo2_label.place(x=380, y=40)
 
 
 # radio buttons for main root bottom menu
@@ -164,9 +170,9 @@ radB.place(x=250,y=220)
 
 # instructions for both frames
 instructions = tk.Label(frame1, text="Select a file to process", font="helvetica 12 bold", bg="#F0F0F0")
-instructions.place(x=380, y=100)
+instructions.place(x=375, y=120)
 instructions2 = tk.Label(frame2, text="Select a file to process", font="helvetica 12 bold", bg="#F0F0F0")
-instructions2.place(x=380, y=100)
+instructions2.place(x=375, y=120)
 
 
 # input boxes and labels for both frames
@@ -190,11 +196,11 @@ e4.place(x=180, y=50)
 browse_text = tk.StringVar()                                                         # changed font, color, and bg of button
 browsebtn = tk.Button(frame1, textvariable=browse_text, command=open_file, font="helvetica 12 bold", bg="navy blue", fg="gold", height=1, width=15)
 browse_text.set("Run")
-browsebtn.place(x=380, y=150)
+browsebtn.place(x=380, y=170)
 
 browsebtn2 = tk.Button(frame2, textvariable=browse_text, command=printingTest,  font="helvetica 12 bold", bg="purple", fg="gold", height=1, width=15)
 browse_text.set("Run")
-browsebtn2.place(x=380, y=150)
+browsebtn2.place(x=380, y=170)
 
 
 #  starts off program on  frame 1
