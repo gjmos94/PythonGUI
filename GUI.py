@@ -14,7 +14,7 @@ def open_file():
     file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("CSV File", "*.csv")])
     x1 = file.name  # This is getting the exact file address
     intCheck()
-    eStr1 = e1.get()   # These are getting the inputs from Entry boxes 1-3
+    eStr1 = e1.get()   # 34These are getting the inputs from Entry boxes 1-3
     eStr2 = e2.get()
     eStr3 = int(e3.get())
 
@@ -126,8 +126,11 @@ def printingTest():
 
 # MAIN CODE=========================================================================================================
 
-# root canvas and frames set up
+# root canvas and frames set up along with icon and title of window
 root = tk.Tk()
+root.title('Revenue Clean Up')
+root.iconbitmap('ilandicon.ico')
+
 canvas = tk.Canvas(root)
 root.geometry("600x300")
 # frames will not cover radio buttons in root
@@ -167,9 +170,9 @@ instructions2.place(x=380, y=100)
 
 
 # input boxes and labels for both frames
-tk.Label(frame1, text="Value 1").place(x=80, y=50)
-tk.Label(frame1, text="Value 2").place(x=80, y=100)
-tk.Label(frame1, text="Value 3").place(x=80, y=150)
+tk.Label(frame1, text="Month 1").place(x=80, y=50)
+tk.Label(frame1, text="Month 2").place(x=80, y=100)
+tk.Label(frame1, text="Variance scope").place(x=80, y=150)
 
 e1 = tk.Entry(frame1)
 e2 = tk.Entry(frame1)
