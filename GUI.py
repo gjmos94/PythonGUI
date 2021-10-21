@@ -1,6 +1,8 @@
 # test comment
+import itertools as ite
 import tkinter as tk
 import pandas as pd
+# import nums_from_string     # Not recognized?
 import numpy as np
 from PIL import Image, ImageTk
 from tkinter.filedialog import askopenfile
@@ -9,7 +11,7 @@ import re, datetime
 # FUNCTIONS=========================================================================================================
 
 # open file function
-def open_file():
+def callCleanRev():
     x1 = " "
 
     file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("CSV File", "*.csv")])
@@ -31,10 +33,10 @@ def open_file():
 
 
     else:
-        print("error")
+        print("Entry Error")
         newWindow = tk.Toplevel(root)
         newWindow.geometry("350x50")
-        completeLabel2 = tk.Label(newWindow, text="ERROR: Please enter numeric values ONLY", fg="red", font="bold")
+        completeLabel2 = tk.Label(newWindow, text="Entry Error: Please enter numeric values ONLY", fg="red", font="bold")
         completeLabel2.grid(column=4, row=4)
 
 
@@ -42,45 +44,6 @@ def open_file():
 
 
     browse_text.set("Run")
-
-
-def callrevRaquel():
-    x1 = " "
-    file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("Excel File", "*.xlsx")])
-    x1 = file.name  # This is getting the exact file address
-    revRaquel(x1)
-    completeLabel = tk.Label(root, text=file.name + "has been processed", fg="Blue")
-    completeLabel.place_forget()
-    completeLabel.place(x=105, y=255)
-def revRaquel(x):
-    # Import the excel file that needs to have dates adjusted
-    data1 = pd.read_excel(x)
-
-    # Drop 1st column since it doesn't have useful information
-    data1.pop(data1.columns[0])
-
-    # Create new column which will store the "cleaned dates"
-    data1['Date (clean)'] = None
-
-    # To have easy access to the taget columns
-    index_description = data1.columns.get_loc('Computation memo')
-    index_date = data1.columns.get_loc('Date (clean)')
-
-    # This for-loop looks for the first date on each box under Computation Memo column and send the new value to Date (clean)
-    for row in range(0, len(data1)):
-        date = re.search(r'([0-9]{2}\/[0-9]{2}\/[0-9]{4})', data1.iat[row, index_description]).group()
-        data1.iat[row, index_date] = date
-
-    data1.to_excel(x)
-
-
-# to test openfile and entry box input
-def testInput(f1,a1,a2,a3):
-    print(type(f1))
-    print(type(a1))
-    print(type(a2))
-    print(type(int(a3)))
-
 
 def clean_rev(x, m1, m2, y):
     # This loads the CSV file into the console
@@ -124,6 +87,144 @@ def clean_rev(x, m1, m2, y):
     df_final.to_csv(x)
 
 
+def callPaymatch():
+    file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("CSV File", "*.csv")])
+    x1 = file.name  # This is getting the exact file address
+
+    data = pd.read_csv(x1)
+
+    df1 = data[['Invoice number', 'Total transaction amount due']]
+
+    df1['Total transaction amount due'] = df1['Total transaction amount due'].replace('[$,)]', '', regex=True)
+    df1['Total transaction amount due'] = df1['Total transaction amount due'].replace('[(]', '-', regex=True)
+    df1['Total transaction amount due'] = df1['Total transaction amount due'].astype(float)
+
+    df2 = df1[(df1['Total transaction amount due'] != 0)]
+
+    df2 = df2.set_index('Invoice number')
+
+    dic = df2.T.to_dict('list')
+
+    for x in dic:
+        dic[x] = str(dic[x]).replace("[", '').replace("]", '')
+        dic[x] = float(dic[x])
+    eStr4 = e4.get()
+    intCheck()
+
+    if intCheck() == True:
+        listCombo(eStr4, dic)
+    else:
+        print("error")
+        newWindow = tk.Toplevel(root)
+        newWindow.geometry("350x50")
+        completeLabel2 = tk.Label(newWindow, text="Entry Error: Please enter numeric values ONLY", fg="red", font="bold")
+        completeLabel2.grid(column=4, row=4)
+
+
+def listCombo(targetVal, bDict): # parameters for target Value and Dictionary with invoice#(keys) and amounts(values)
+
+    aDict = {}  # Dict to hold Values with alphabetized letters
+    dictChar = "A"
+    for values in bDict:    # loop will create a key with the char Val "A" along with the first value
+        aDict[dictChar] = bDict[values] # loop will continue adding 1 to Char to get the next letter
+        dictChar = chr(ord(dictChar)+1)
+    newLoopCount = len(aDict)   # secondary counter for combinations loop
+    # example desired value to find in combinations
+    print(aDict)
+    comboMaker(aDict, newLoopCount, targetVal, bDict) # first iteration of function called for combination of all values
+
+    while newLoopCount > 2:     # Will keep doing combinations of elements down to 2
+        newLoopCount = newLoopCount - 1 # newLoop counter decreases to keep lowering number of elements for combinations
+        comboMaker(aDict, newLoopCount, targetVal, bDict)
+        # continues loop for function with the updated number of elements
+
+def comboMaker(someDict, newLoop,targetVal2, secondDict):
+
+    #print(newLoop)  # prints number of elements for combinations
+    res = ite.combinations(someDict, newLoop)   #calls for combinations of key values in dictionary with N
+    allCombos = list(res)   # puts Combinations object into a list
+    secondLength = len(allCombos)   #second length for inner loop
+
+    #print(len(allCombos))
+
+    for i in range(len(allCombos)): # will repeat until i reaches allCombos size
+        if secondLength > 0:        # if second length is met, we exit the loop to continue with the next combo
+
+            count = 2  # counter for string chars limit
+            checker = 0  # value that will hold the added value of combo to check with target value
+            keyStr = str(allCombos[i])  # makes Key value used to add from dictionary value
+            while count < len(keyStr):  #counter for char positions. this will make sure to go though all the combo string  ex. ("A","B","C")
+                    newCount=0
+                    checker = checker + someDict[keyStr[count]] # adds the value of the Key str with
+                    count = count + 5  # fixed count to find Chars for Key values in string
+            if checker == targetVal2:  # if target val is found, print
+                print("Found it!!!")
+                print(checker)
+                print(allCombos[i])         # prints combination with Alphabet dictionary
+                count = 2                   #second counter to check char of combinations
+                checkerReset = 0                 #second checker to use with each combination
+                finalChecker = 0
+                groupCheck = newLoop
+                while count < len(keyStr):  # counter for char positions. this will make sure to go though all the combo string  ex. ("A","B","C")
+                    checkerReset = checkerReset + someDict[keyStr[count]]  # adds the value of the Key str with
+                    newCount = 0
+                    finalChecker= checkerReset
+
+
+                    for value in secondDict:
+                        if finalChecker <= targetVal2:
+
+                            if someDict[keyStr[count]] == secondDict[value]:        # checks for same value in original dict
+                                if groupCheck != 0:
+                                    print(list(secondDict.keys())[newCount])
+                                    finalChecker = finalChecker + secondDict[value]
+                                    groupCheck = groupCheck - 1
+                            newCount = newCount + 1
+
+
+                    count = count + 5
+
+
+
+
+
+            #print(checker)
+            secondLength = secondLength - 1 # decrease to continue loop
+
+    allCombos.clear()   # clear for next package
+
+
+
+def callrevRaquel():
+    x1 = " "
+    file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("Excel File", "*.xlsx")])
+    x1 = file.name  # This is getting the exact file address
+    revRaquel(x1)
+    completeLabel = tk.Label(root, text=file.name + "has been processed", fg="Blue")
+    completeLabel.place_forget()
+    completeLabel.place(x=105, y=255)
+def revRaquel(x):
+    # Import the excel file that needs to have dates adjusted
+    data1 = pd.read_excel(x)
+
+    # Drop 1st column since it doesn't have useful information
+    data1.pop(data1.columns[0])
+
+    # Create new column which will store the "cleaned dates"
+    data1['Date (clean)'] = None
+
+    # To have easy access to the taget columns
+    index_description = data1.columns.get_loc('Computation memo')
+    index_date = data1.columns.get_loc('Date (clean)')
+
+    # This for-loop looks for the first date on each box under Computation Memo column and send the new value to Date (clean)
+    for row in range(0, len(data1)):
+        date = re.search(r'([0-9]{2}\/[0-9]{2}\/[0-9]{4})', data1.iat[row, index_description]).group()
+        data1.iat[row, index_date] = date
+
+    data1.to_excel(x)
+
+
 # function to check value of radio button selected
 def clicked(value):
     if value == 2:
@@ -161,10 +262,6 @@ def intCheck():
         return True
     except ValueError:
         return False
-
-
-def printingTest():
-    print("THIS IS THE SECOND WIDGET")
 
 
 # MAIN CODE=========================================================================================================
@@ -236,18 +333,18 @@ e1.place(x=180, y=50)
 e2.place(x=180, y=100)
 e3.place(x=180, y=150)
 
-tk.Label(frame2, text = "Value").place(x=80, y=50)
+tk.Label(frame2, text = "Target Value").place(x=80, y=100)
 e4 = tk.Entry(frame2)
-e4.place(x=180, y=50)
+e4.place(x=180, y=100)
 
 
 # RUN button set up for both frames
 browse_text = tk.StringVar()                                                         # changed font, color, and bg of button
-browsebtn = tk.Button(frame1, textvariable=browse_text, command=open_file, font="helvetica 12 bold", bg="navy blue", fg="gold", height=1, width=15)
+browsebtn = tk.Button(frame1, textvariable=browse_text, command=callCleanRev, font="helvetica 12 bold", bg="navy blue", fg="gold", height=1, width=15)
 browse_text.set("Run")
 browsebtn.place(x=380, y=170)
 
-browsebtn2 = tk.Button(frame2, textvariable=browse_text, command=printingTest,  font="helvetica 12 bold", bg="navy blue", fg="gold", height=1, width=15)
+browsebtn2 = tk.Button(frame2, textvariable=browse_text, command=callPaymatch,  font="helvetica 12 bold", bg="navy blue", fg="gold", height=1, width=15)
 browse_text.set("Run")
 browsebtn2.place(x=380, y=170)
 
