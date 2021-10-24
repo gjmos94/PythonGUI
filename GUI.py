@@ -1,5 +1,4 @@
-
-import itertools as ite
+import itertools as iter
 import tkinter as tk
 import pandas as pd
 from PIL import Image, ImageTk
@@ -35,7 +34,7 @@ def callCleanRev():
         newWindow = tk.Toplevel(root)
         newWindow.geometry("350x50")
         completeLabel2 = tk.Label(newWindow, text="Entry Error: Please enter numeric values ONLY", fg="red", font="bold")
-        completeLabel2.grid(column=4, row=4)
+        completeLabel2.pack
 
 
 
@@ -105,71 +104,33 @@ def callPaymatch():
         dic[x] = float(dic[x])
     eStr4 = e4.get()
     eStr4 = float(eStr4)
-
-    listCombo(eStr4, dic)
-
+    paymatch(dic, eStr4)
 
 
-def listCombo(targetVal, bDict): # parameters for target Value and Dictionary with invoice#(keys) and amounts(values)
+def paymatch (dictionary_pandas, target_value):
+    result_window = tk.Toplevel(root)
+    result_window.geometry("500x90")
+    x = 0
+    for i in range(2,len(dictionary_pandas)+1):
+        combination_objt = iter.combinations(dictionary_pandas, i)
+        combinations_list= list(combination_objt)
+        for j in combinations_list:
 
-    aDict = {}  # Dict to hold Values with alphabetized letters
-    dictChar = "A"
-    for values in bDict:    # loop will create a key with the char Val "A" along with the first value
-        aDict[dictChar] = bDict[values] # loop will continue adding 1 to Char to get the next letter
-        dictChar = chr(ord(dictChar)+1)
-    newLoopCount = len(aDict)   # secondary counter for combinations loop
-    # example desired value to find in combinations
-    print(aDict)
-    print(bDict)
-    comboMaker(aDict, newLoopCount, targetVal, bDict) # first iteration of function called for combination of all values
-
-    while newLoopCount > 2:     # Will keep doing combinations of elements down to 2
-        newLoopCount = newLoopCount - 1 # newLoop counter decreases to keep lowering number of elements for combinations
-        comboMaker(aDict, newLoopCount, targetVal, bDict)
-        # continues loop for function with the updated number of elements
-
-def comboMaker(someDict, newLoop,targetVal2, secondDict):
-
-    #print(newLoop)  # prints number of elements for combinations
-    res = ite.combinations(someDict, newLoop)   #calls for combinations of key values in dictionary with N
-    allCombos = list(res)   # puts Combinations object into a list
-    secondLength = len(allCombos)   #second length for inner loop
-
-    for i in range(len(allCombos)): # will repeat until i reaches allCombos size
-        if secondLength > 0:        # if second length is met, we exit the loop to continue with the next combo
-            count = 2  # counter for string chars limit
-            checker = 0  # value that will hold the added value of combo to check with target value
-            keyStr = str(allCombos[i])  # makes Key value used to add from dictionary value
-            while count < len(keyStr):  #counter for char positions. this will make sure to go though all the combo string  ex. ("A","B","C")
-                newCount=0
-                checker = checker + someDict[keyStr[count]] # adds the value of the Key str with
-                count = count + 5  # fixed count to find Chars for Key values in string
-                #print(checker)
-                #print(allCombos[i])
-            if checker == targetVal2:  # if target val is found, print
-                print("Found it!!!")
-                print(checker)
-                print(allCombos[i])         # prints combination with Alphabet dictionary
-                count = 2                   #second counter to check char of combinations
-                checkerReset = 0                 #second checker to use with each combination
-                finalChecker = 0
-                groupCheck = newLoop
-                while count < len(keyStr):  # counter for char positions. this will make sure to go though all the combo string  ex. ("A","B","C")
-                    checkerReset = checkerReset + someDict[keyStr[count]]  # adds the value of the Key str with
-                    newCount = 0
-                    finalChecker= checkerReset
-                    for value in secondDict:
-                        if finalChecker <= targetVal2:
-                            if someDict[keyStr[count]] == secondDict[value]:        # checks for same value in original dict
-                                if groupCheck != 0:
-                                    print(list(secondDict.keys())[newCount])
-                                    finalChecker = finalChecker + secondDict[value]
-                                    groupCheck = groupCheck - 1
-                            newCount = newCount + 1
-                    count = count + 5
-            secondLength = secondLength - 1 # decrease to continue loop
-    allCombos.clear()   # clear for next package
-
+            count1 = i - 1
+            checker1 = 0
+            invoices = []
+            while count1 >-1:
+                checker1 = checker1 + dictionary_pandas[j[count1]]
+                invoices.append(j[count1])
+                count1 = count1 - 1
+            if checker1 == target_value:
+                print(invoices)
+                x=1
+                completeLabel3 = tk.Label(result_window, text=invoices, fg="red", font="bold")
+                completeLabel3.pack()
+    if x == 0:
+        completeLabel2 = tk.Label(result_window, text="No result found", fg="red", font="bold")
+        completeLabel2.pack()
 
 def callrevRaquel():
     x1 = " "
@@ -179,6 +140,7 @@ def callrevRaquel():
     completeLabel = tk.Label(root, text=file.name + "has been processed", fg="Blue")
     completeLabel.place_forget()
     completeLabel.place(x=105, y=255)
+
 def revRaquel(x):
     # Import the excel file that needs to have dates adjusted
     data1 = pd.read_excel(x)
@@ -333,6 +295,7 @@ browsebtn3.place(x=380, y=170)
 Funct1()
 
 root.mainloop()
+
 
 
 
