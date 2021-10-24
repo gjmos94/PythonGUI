@@ -10,36 +10,24 @@ import re, datetime
 # open file function
 def callCleanRev():
     x1 = " "
-
     file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("CSV File", "*.csv")])
     x1 = file.name  # This is getting the exact file address
-
     completeLabel = tk.Label(root, text=file.name + "has been processed", fg="Blue")
     completeLabel.place_forget()
-
     eStr1 = e1.get()   # These are getting the inputs from Entry boxes 1-3
     eStr2 = e2.get()
     eStr3 = e3.get()
     intCheck()
-
     if intCheck() == True:
         eStr3= int(eStr3)
         clean_rev(x1, eStr1, eStr2, eStr3)
         completeLabel.place(x=105, y=255)
-
-
-
     else:
         print("Entry Error")
         newWindow = tk.Toplevel(root)
         newWindow.geometry("350x50")
         completeLabel2 = tk.Label(newWindow, text="Entry Error: Please enter numeric values ONLY", fg="red", font="bold")
         completeLabel2.pack
-
-
-
-
-
     browse_text.set("Run")
 
 def clean_rev(x, m1, m2, y):
@@ -62,50 +50,33 @@ def clean_rev(x, m1, m2, y):
         'Balance (USD)'
     ]
     df1 = df1.fillna(0)
-
     df1["Total Billed"] = df1.Credit - df1.Debit
-
     df1.drop(df1[df1['Memo / Description'] == 0].index, inplace=True)
-
     df1['Posted_Dt'] = pd.DatetimeIndex(df1['Posted_Dt']).month
-
     pivot1 = pd.pivot_table(df1, index=['Contract', 'Customer Name'],columns='Posted_Dt',values='Total Billed',aggfunc='sum')
-
     df2 = pd.DataFrame(pivot1.to_records())
-
     df2 = df2.fillna(0)
-
     df2["Variance"] = df2[m1] - df2[m2]
-
     df_final = df2[(df2.Variance >= y) | (df2.Variance <= -y)]
     df_final.to_csv(x)
-
 
 def callPaymatch():
     file = askopenfile(parent=root, mode='r', title="choose a file", filetype=[("CSV File", "*.csv")])
     x1 = file.name  # This is getting the exact file address
-
     data = pd.read_csv(x1)
-
     df1 = data[['Invoice number', 'Total transaction amount due']]
-
     df1['Total transaction amount due'] = df1['Total transaction amount due'].replace('[$,)]', '', regex=True)
     df1['Total transaction amount due'] = df1['Total transaction amount due'].replace('[(]', '-', regex=True)
     df1['Total transaction amount due'] = df1['Total transaction amount due'].astype(float)
-
     df2 = df1[(df1['Total transaction amount due'] != 0)]
-
     df2 = df2.set_index('Invoice number')
-
     dic = df2.T.to_dict('list')
-
     for x in dic:
         dic[x] = str(dic[x]).replace("[", '').replace("]", '')
         dic[x] = float(dic[x])
     eStr4 = e4.get()
     eStr4 = float(eStr4)
     paymatch(dic, eStr4)
-
 
 def paymatch (dictionary_pandas, target_value):
     result_window = tk.Toplevel(root)
@@ -115,7 +86,6 @@ def paymatch (dictionary_pandas, target_value):
         combination_objt = iter.combinations(dictionary_pandas, i)
         combinations_list= list(combination_objt)
         for j in combinations_list:
-
             count1 = i - 1
             checker1 = 0
             invoices = []
@@ -126,7 +96,7 @@ def paymatch (dictionary_pandas, target_value):
             if checker1 == target_value:
                 print(invoices)
                 x=1
-                completeLabel3 = tk.Label(result_window, text=invoices, fg="red", font="bold")
+                completeLabel3 = tk.Label(result_window, text=invoices, fg="black", font="bold")
                 completeLabel3.pack()
     if x == 0:
         completeLabel2 = tk.Label(result_window, text="No result found", fg="red", font="bold")
@@ -144,33 +114,25 @@ def callrevRaquel():
 def revRaquel(x):
     # Import the excel file that needs to have dates adjusted
     data1 = pd.read_excel(x)
-
     # Drop 1st column since it doesn't have useful information
     data1.pop(data1.columns[0])
-
     # Create new column which will store the "cleaned dates"
     data1['Date (clean)'] = None
-
     # To have easy access to the taget columns
     index_description = data1.columns.get_loc('Computation memo')
     index_date = data1.columns.get_loc('Date (clean)')
-
     # This for-loop looks for the first date on each box under Computation Memo column and send the new value to Date (clean)
     for row in range(0, len(data1)):
         date = re.search(r'([0-9]{2}\/[0-9]{2}\/[0-9]{4})', data1.iat[row, index_description]).group()
         data1.iat[row, index_date] = date
-
     data1.to_excel(x)
-
 
 # function to check value of radio button selected
 def clicked(value):
     if value == 2:
         Funct2()
-
     if value == 1:
         Funct1()
-
     if value == 3:
         Funct3()
 
@@ -202,7 +164,7 @@ def intCheck():
         return False
 
 
-# MAIN CODE=========================================================================================================
+# MAIN GUI CODE=========================================================================================================
 
 # root canvas and frames set up along with icon and title of window
 root = tk.Tk()
@@ -295,9 +257,3 @@ browsebtn3.place(x=380, y=170)
 Funct1()
 
 root.mainloop()
-
-
-
-
-
-
